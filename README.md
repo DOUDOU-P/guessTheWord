@@ -1,35 +1,59 @@
-Programme console pour faire deviner un mot à l'utilisateur
-Le principe est simple, l'utilisateurs a droit à un nombre de tentatives et doit deviner un mot choisi aléatoirement dans le fichier words.txt.
-Au debut, aucune lettre n'est devoilée, chaque bonne lettre proposé par l'utilisateur est affiché autant de fois qu'il se trouve dans le mot à deviner
-Les autres lettres qui n'ont pas encore été devinées sont masquées par des étoiles jusqu'à ce qu'elles soient devinées.
-Le jeu est gagné lorsque l'utilisateur trouve toutes les lettres qui composent le mot et perdu si celui ci ne trouve pas le mot correct au bout de sa dernière tentative.
-Le fichier secretWord.h contient les prototypes de toutes les fonctions utilisées.
+# Guess The Word (Version C++)
 
-unsigned int generateRandomNumber(const unsigned int, const unsigned int);
-  Cette fonction génère un nombre aléatoire entre 1 et n, n étant le nombre de mots dans le fichier
-  Sa sortie est utilisée par la fonction getSecretWord afin de trouver le m ième mot m étant le nombre aléatoire
-  généré entre 1 et n.
-  
-void getSecretWord(FILE*, const unsigned int, const unsigned int, char*);
-  Cette fonction se sert du fichier et de la sortie de la fonction generateRandomNumber
-  pour selectionner le bon mot le 3e paramètre est la chaine dans laquelle on écrira le
-  mot sélectionné.
+## Aperçu
+Ce projet propose une variante C++ du jeu "Guess The Word" : un mot mystère est choisi aléatoirement et le joueur doit le découvrir avant d'épuiser ses tentatives. L'interface console a été pensée pour offrir une progression fluide avec menu principal, choix de difficulté, suivi du score et historique des parties.
 
-void initializeWithStars(char*, const size_t);
-  Cette fonction prend une chaine et l'initialise avec des etoiles.
-  Les etoiles seront progressivement remplacées par les caractères
-  trouvées par l'utilisateur au fil du jeu
-  
-void gameLoop(const char*, char*, char*, unsigned int);
-  C'est le coeur du programme, elle a pour role de prendre les propositions
-  de l'utilisateur, verifier si elles sont dans le mot secret et les remplacer
-  dans le tableau guessedLetters qui au départ à été initialisé avec des étoiles 
-  avec la fonction initializeWithStars(). Cette fonction est donc notre 
-  boucle de jeu et s'arrêtre dans 2 cas de figures
-  - Le nombre d'essais a atteint zéro
-  - L'utilisateur a trouvé le bon mot
+## Fonctionnalités clés
+- **Interface guidée** : menus clairs pour lancer une partie, consulter les règles ou afficher les derniers scores.
+- **Niveaux de difficulté** : trois listes de mots (`facile`, `moyen`, `difficile`) influencent le nombre de tentatives accordées.
+- **Système de score** : calcul basé sur les tentatives restantes, la longueur du mot et l'efficacité du joueur.
+- **Suivi des performances** :
+  - `best_score.txt` conserve le meilleur score global.
+  - `scores.txt` liste les dernières parties (affichées depuis le menu principal).
+  - `historique.txt` archive l'ensemble des résultats (utile pour analyser toutes les parties).
+- **Gestion des données** : les mots possibles sont stockés dans `txt/<niveau>.txt`, faciles à enrichir.
 
-    
-void clearBuffer();
-  Cette fonction est un utilitaire pour vider la mémoire tampon, surtout après la lecture d'un caractère afin d'éviter
-  de recupérer un résidus de la mémoire tampon
+## Arborescence
+```
+c++/
+├── affichage.h        # Fonctions d'affichage et d'interface utilisateur
+├── main.cpp           # Boucle principale : menus, gameplay, calcul du score
+├── variable.h         # Constantes et variables globales partagées
+├── txt/
+│   ├── facile.txt     # Mots du niveau facile
+│   ├── moyen.txt      # Mots du niveau moyen
+│   ├── difficile.txt  # Mots du niveau difficile
+│   ├── best_score.txt # Record actuel
+│   ├── scores.txt     # Derniers scores (affichés dans le menu)
+│   └── historique.txt # Historique complet des parties
+└── README.md          # Ce document
+```
+
+## Compilation
+Depuis le dossier `c++/`, compilez avec **g++** (C++17 recommandé) :
+```bash
+g++ -std=c++17 -o guessTheWord main.cpp
+```
+
+## Lancement
+Toujours dans `c++/` :
+```bash
+./guessTheWord
+```
+
+## Déroulement d'une partie
+1. **Menu principal** : choisir "Jouer".
+2. **Pseudo** : renseigner un nom pour personnaliser les scores.
+3. **Difficulté** : sélectionner le niveau (influe sur les tentatives). Le mot mystère est alors tiré au hasard.
+4. **Tour par tour** : proposer des lettres ; les bonnes sont révélées dans le mot. Les autres réduisent le nombre de tentatives.
+5. **Fin de partie** :
+   - **Victoire** : calcul du score, possible nouveau record, ajout à l'historique.
+   - **Défaite** : révélation du mot mystère et sauvegarde du résultat.
+
+## Personnalisation rapide
+- Ajouter ou modifier des mots : éditer `txt/facile.txt`, `txt/moyen.txt`, `txt/difficile.txt`.
+- Changer le nombre de tentatives de base : ajuster `maxTentatives` dans `variable.h`.
+- Adapter le calcul du score : modifier `calculerScore` dans `main.cpp`.
+
+## Licences et attribution
+Les fichiers textes et le code C++ sont fournis à titre pédagogique. Adaptez, partagez ou améliorez librement en mentionnant la source si nécessaire.
